@@ -1,6 +1,7 @@
 /*eslint-disable*/
 // import { select } from './utils/dom';
 // import isMobile from './utils/isMobile';
+import { pick } from 'lodash';
 
 window.onResize = (width) => {
   console.log(width);
@@ -128,6 +129,14 @@ const formatTime = d3.timeFormat('%H:%M %p');
 const colorScale = d3.scaleOrdinal()
   .domain(keys)
   .range('orange', '#005DC7')
+
+
+const pieBounds = d3.select('#pie-chart').node().getBoundingClientRect();
+const pieStage = d3.select('#pie-chart')
+    .append('svg')
+    .attr("viewBox", [0, 0, pieBounds.width, pieBounds.height])
+    .append('g')
+    .attr('transform', 'translate(' + pieBounds.width / 2 + ',' + pieBounds.height / 2 + ')')
 
 function makeLineChart(data) {
   const { width, height } = d3.select('#line-chart').node().getBoundingClientRect();
@@ -305,21 +314,36 @@ function makeLineChart(data) {
     }
 
     focus.style('opacity', 1);
+
+    makePieChart(point);
   }
+}
 
 
-  // const total = lineGroup.selectAll(".totals")
-  //     .data(lineData)
+function makePieChart(dataset) {
+  const pieKeys = ['a', 'b', 'c', 'd'];
+  const pieData = pick(dataset, pieKeys);
 
-  // total.exit().remove();
+  console.log(pieData);
+  const color = d3.scaleOrdinal()
+    .domain(pieKeys)
+    .range(['#F1892D', '#0EAC51', '#0077C0', '#7E349D', '#DA3C78', '#E74C3C'])
 
-  // total.enter()
-  //   .append("path")
-  //   .attr("class", d => `line ${d.id}`)
-  //   .merge(total)
-  // // .transition().duration()
-  //   .attr("d", d => line(d.numbers))
+  const pie = d3.pie()
+    .value((d) => d[1])
 
+  const arc = d3.arc()
+    .innerRadius(0)
+    .outerRadius(100)
+
+    console.log((Object.entries(pieData)))
+  const part = pieStage.selectAll('.part')
+    .data(pie(Object.entries(pieData)));
+
+  part.join('path')
+    .attr('class', 'part')
+    .attr('d', arc)
+    .attr('fill', (d, i) => color(i))
 }
 
 
