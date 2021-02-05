@@ -150,7 +150,6 @@ function makeLineChart(data) {
   const y = d3.scaleLinear()
     .range([innerHeight, 0])
 
-
   y.domain([0, d3.max(lineData, d => d3.max(d.data, c => c.value))])
     .nice();
 
@@ -205,13 +204,29 @@ function makeLineChart(data) {
   const lineGroup = group.append("g")
     .attr('class', 'line-group');
 
-
-  lineGroup.insert('g', '.focus')
+  const join = lineGroup.insert('g', '.focus')
+    .attr('class', 'lg')
     .selectAll('path')
     .data(data)
-    .join('path')
+    .join('g')
+    .attr('class', d => `line-wrapper line-wrapper-${d.id}`);
+
+  join.append('path')
+    .attr('class', 'line')
     .attr('d', d => line(d.data))
     .attr('class', d => `line line-${d.id}`);
+
+  join.append('g')
+    .attr('class', 'points-group')
+
+  const points = join.selectAll('.points-group')
+    .selectAll('.line-point')
+    .data(d => d.data)
+    .join('circle')
+    .attr('class', d => `line-point line-point-${d.id}`)
+    .attr('cx', d => x(d.time))
+    .attr('cy', d => y(d.value))
+    .attr('r', 2);
 
   const area = d3.area()
     .curve(d3.curveLinear)
@@ -219,7 +234,7 @@ function makeLineChart(data) {
     .y0(y(0))
     .y1(d => y(d.value));
 
-  lineGroup.append("path")
+  group.append("path")
     .attr('class', 'line-current-total-fill')
     .datum(data[1].data)
     .attr("d", area);
@@ -260,8 +275,7 @@ function makeLineChart(data) {
     const i = bisect(threat, x0, 1);
     const d0 = threat[i - 1];
     const d1 = threat[i];
-    const point = x0 - d0.date > d1.date - x0 ? d1 : d0;
-    console.log(point);
+    const point = x0 - d0.time > d1.time - x0 ? d1 : d0;
 
     focus.select(".lineHover")
       .attr("transform", `translate(${x(point.time)}, ${height})`);
