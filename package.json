@@ -1,0 +1,55 @@
+{
+  "name": "globe-graphic-template",
+  "version": "2.0.5",
+  "homepage": "https://ssdatar.github.io/wallaroo-time-map",
+  "scripts": {
+    "start": "npm-run-all --silent --parallel webpack stylus server open",
+    "webpack": "webpack -w --config webpack.config.js",
+    "stylus": "stylus -w src/dev/css/*.styl -o src/main.css",
+    "server": "light-server -q -s . -p 8888 -w 'src/main.js, src/index.html # # reload' -w 'src/main.css # # reloadcss'",
+    "clean": "rimraf build && mkdir build",
+    "prebuild": "npm run clean -s",
+    "build:html": "cp src/index.html ./build/",
+    "build:webpack": "webpack --config webpack.config.js",
+    "build:js": "uglifyjs src/main.js -c -m -o ./build/main.js",
+    "build:stylus": "stylus src/dev/css/*.styl -o src/main.css",
+    "build:css": "autoprefixer < src/main.css | uglifycss src/main.css > ./build/main.css",
+    "build:assets": "shx cp -R src/assets/ ./build/assets/",
+    "build": "npm run build:webpack && npm run build:stylus && npm run build:html && npm run build:js && npm run build:css && npm run build:assets",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
+    "open": "open http://localhost:8888"
+  },
+  "browserslist": [
+    "cover 99.5% in US",
+    "not dead"
+  ],
+  "author": "Russell Goldenberg, Saurabh Datar",
+  "license": "MIT",
+  "devDependencies": {
+    "autoprefixer": "8.4.1",
+    "babel-core": "^6.26.3",
+    "babel-eslint": "^10.0.1",
+    "babel-loader": "^7.1.4",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-stage-1": "^6.24.1",
+    "dsv-loader": "^2.0.0",
+    "eslint": "^5.13.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-loader": "^2.1.2",
+    "eslint-plugin-import": "^2.16.0",
+    "gh-pages": "^3.1.0",
+    "json-loader": "^0.5.7",
+    "light-server": "^2.5.0",
+    "npm-run-all": "^4.1.2",
+    "rimraf": "2.6.2",
+    "shx": "0.2.2",
+    "stylus": "^0.54.5",
+    "uglify-js": "3.3.23",
+    "uglifycss": "0.0.29",
+    "webpack": "^3.11.0"
+  },
+  "dependencies": {
+    "lodash": "^4.17.20"
+  }
+}
