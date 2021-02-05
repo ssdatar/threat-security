@@ -116,17 +116,17 @@ data.forEach(d => {
 const keys = ['historical_total', 'current_total'];
 const lineData = keys.map(k => ({
   id: k,
-  numbers: data.map(v => ({
+  data: data.map(v => ({
     time: v.time,
     value: +v[k]
   }))
 }));
 console.log(lineData);
-const xDomain = d3.extent(data, d => d3.timeFormat('%H:%M')(d.time));
+const xDomain = d3.extent(data, d => d.time);
 
 function makeLineChart(data) {
   const { width, height } = d3.select('#line-chart').node().getBoundingClientRect();
-  const margin = {top: 10, right: 10, bottom: 20, left: 30}
+  const margin = {top: 10, right: 10, bottom: 50, left: 30}
   let innerHeight = height - margin.top - margin.bottom;
   let innerWidth = width - margin.left - margin.right;
   let chartid = 'line-chart';
@@ -144,7 +144,9 @@ function makeLineChart(data) {
 
   const y = d3.scaleLinear()
     .range([innerHeight, 0])
-    .domain([0, 200])
+
+
+  y.domain([0, d3.max(lineData, d => d3.max(d.data, c => c.value))])
     .nice();
 
   const xAxis = d3.axisBottom(x);
@@ -186,18 +188,37 @@ function makeLineChart(data) {
     .attr("text-anchor", "middle")
     .attr("font-size", 12);
 
-  // const overlay = group.append("rect")
-  //   .attr("class", "overlay")
-  //   .attr("x", margin.left)
-  //   .attr("width", width - margin.right - margin.left)
-  //   .attr("height", height);
+  const overlay = group.append("rect")
+    .attr("class", "overlay")
+    .attr("x", margin.left)
+    .attr("width", width - margin.right - margin.left)
+    .attr("height", height);
 
-  // const line = d3.line()
-  //   .x(d => x(d.date))
-  //   .y(d => y(d.value))
+  const line = d3.line()
+    .x(d => x(d.time))
+    .y(d => y(d.value))
 
-  // const lineGroup = group.append("g")
-  //   .attr('class', 'line-group');
+  const lineGroup = group.append("g")
+    .attr('class', 'line-group');
+
+
+  lineGroup.append('g')
+    .selectAll('path')
+    .data(data)
+    .join('path')
+    .attr('d', d => line(d.data))
+    .attr('class', d => `line line-${d.id}`);
+
+  const area = d3.area()
+    .curve(d3.curveLinear)
+    .x(d => x(d.time))
+    .y0(y(0))
+    .y1(d => y(d.value));
+
+  lineGroup.append("path")
+    .attr('class', 'line-current-total-fill')
+    .datum(data[1].data)
+    .attr("d", area);
 
   // const total = lineGroup.selectAll(".totals")
   //     .data(lineData)
