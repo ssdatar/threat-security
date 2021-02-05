@@ -107,3 +107,110 @@ const data = [{'mins':0,'time':'0:00','historical_total':55,'current_total':48,'
 {'mins':1410,'time':'23:30','historical_total':56,'current_total':62,'detections':59,'severe':3,'medium':13,'low':43,'a':38,'b':14,'c':5,'d':2},
 {'mins':1425,'time':'23:45','historical_total':56,'current_total':55,'detections':62,'severe':3,'medium':13,'low':46,'a':38,'b':16,'c':6,'d':2}];
 
+const { width, height } = d3.select('#line-chart').node().getBoundingClientRect();
+
+data.forEach(d => {
+  d.time = d3.timeParse('%H:%M')(d.time);
+});
+
+const keys = ['historical_total', 'current_total'];
+const lineData = keys.map(k => ({
+  id: k,
+  numbers: data.map(v => ({
+    time: v.time,
+    value: +v[k]
+  }))
+}));
+console.log(lineData);
+const xDomain = d3.extent(data, d => d3.timeFormat('%H:%M')(d.time));
+
+function makeLineChart(data) {
+  const { width, height } = d3.select('#line-chart').node().getBoundingClientRect();
+  const margin = {top: 10, right: 10, bottom: 20, left: 30}
+  let innerHeight = height - margin.top - margin.bottom;
+  let innerWidth = width - margin.left - margin.right;
+  let chartid = 'line-chart';
+
+  const svg = d3.select('#line-chart')
+    .append("svg")
+    .attr("viewBox", [0, 0, width, height]);
+
+  const group = svg.append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+  const x = d3.scaleTime()
+    .range([0, width - margin.left - margin.right])
+    .domain(xDomain)
+
+  const y = d3.scaleLinear()
+    .range([innerHeight, 0])
+    .domain([0, 200])
+    .nice();
+
+  const xAxis = d3.axisBottom(x);
+  const yAxis = d3.axisLeft(y);
+
+  group.append("line")
+    .attr("class", "y-highlight")
+    .attr('x1', 0)
+    .attr('x2', 0)
+    .attr('y1', 0)
+    .attr('y2', innerHeight)
+    .style('stroke', '#999')
+    .style('opacity', 0);
+
+  group.append("g")
+    .attr("class", "x axis")
+    .attr("transform", "translate("+ 0 + "," + innerHeight + ")")
+    .call(xAxis);
+
+  group.append("g")
+    .attr("class", "y axis")
+    .call(yAxis);
+
+  const focus = group.append("g")
+    .attr("class", "focus")
+    .style("display", "none");
+
+  focus.append("line")
+    .attr("class", "lineHover")
+    .style("stroke", "#999")
+    .attr("stroke-width", 1)
+    .style("shape-rendering", "crispEdges")
+    .style("opacity", 0.5)
+    .attr("y1", -height)
+    .attr("y2", 0);
+
+  focus.append("text")
+    .attr("class", "lineHoverDate")
+    .attr("text-anchor", "middle")
+    .attr("font-size", 12);
+
+  // const overlay = group.append("rect")
+  //   .attr("class", "overlay")
+  //   .attr("x", margin.left)
+  //   .attr("width", width - margin.right - margin.left)
+  //   .attr("height", height);
+
+  // const line = d3.line()
+  //   .x(d => x(d.date))
+  //   .y(d => y(d.value))
+
+  // const lineGroup = group.append("g")
+  //   .attr('class', 'line-group');
+
+  // const total = lineGroup.selectAll(".totals")
+  //     .data(lineData)
+
+  // total.exit().remove();
+
+  // total.enter()
+  //   .append("path")
+  //   .attr("class", d => `line ${d.id}`)
+  //   .merge(total)
+  // // .transition().duration()
+  //   .attr("d", d => line(d.numbers))
+
+}
+
+makeLineChart(lineData);
