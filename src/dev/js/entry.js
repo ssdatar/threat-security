@@ -10,7 +10,7 @@ window.enterView = (msg) => {
   console.log('enter-view', msg);
 };
 
-const data = [{'mins':0,'time':'0:00','historical_total':55,'current_total':48,'detections':55,'severe':3,'medium':14,'low':38,'a':34,'b':14,'c':5,'d':2},
+const threat = [{'mins':0,'time':'0:00','historical_total':55,'current_total':48,'detections':55,'severe':3,'medium':14,'low':38,'a':34,'b':14,'c':5,'d':2},
 {'mins':15,'time':'0:15','historical_total':55,'current_total':54,'detections':51,'severe':3,'medium':12,'low':36,'a':22,'b':20,'c':7,'d':2},
 {'mins':30,'time':'0:30','historical_total':55,'current_total':52,'detections':57,'severe':3,'medium':12,'low':42,'a':33,'b':16,'c':6,'d':2},
 {'mins':45,'time':'0:45','historical_total':55,'current_total':57,'detections':58,'severe':3,'medium':12,'low':43,'a':21,'b':25,'c':9,'d':3},
@@ -109,20 +109,25 @@ const data = [{'mins':0,'time':'0:00','historical_total':55,'current_total':48,'
 
 const { width, height } = d3.select('#line-chart').node().getBoundingClientRect();
 
-data.forEach(d => {
+threat.forEach(d => {
   d.time = d3.timeParse('%H:%M')(d.time);
 });
 
 const keys = ['historical_total', 'current_total'];
 const lineData = keys.map(k => ({
   id: k,
-  data: data.map(v => ({
+  data: threat.map(v => ({
     time: v.time,
     value: +v[k]
   }))
 }));
 console.log(lineData);
-const xDomain = d3.extent(data, d => d.time);
+const xDomain = d3.extent(threat, d => d.time);
+const bisectDate = d3.bisector(d => d.time).left;
+const formatTime = d3.timeFormat('%H:%M %p');
+const colorScale = d3.scaleOrdinal()
+  .domain(keys)
+  .range('orange', '#005DC7')
 
 function makeLineChart(data) {
   const { width, height } = d3.select('#line-chart').node().getBoundingClientRect();
@@ -149,7 +154,7 @@ function makeLineChart(data) {
   y.domain([0, d3.max(lineData, d => d3.max(d.data, c => c.value))])
     .nice();
 
-  const xAxis = d3.axisBottom(x);
+  const xAxis = d3.axisBottom(x).tickFormat(formatTime);
   const yAxis = d3.axisLeft(y);
 
   group.append("line")
@@ -171,8 +176,7 @@ function makeLineChart(data) {
     .call(yAxis);
 
   const focus = group.append("g")
-    .attr("class", "focus")
-    .style("display", "none");
+    .attr("class", "focus");
 
   focus.append("line")
     .attr("class", "lineHover")
@@ -202,7 +206,7 @@ function makeLineChart(data) {
     .attr('class', 'line-group');
 
 
-  lineGroup.append('g')
+  lineGroup.insert('g', '.focus')
     .selectAll('path')
     .data(data)
     .join('path')
@@ -220,6 +224,76 @@ function makeLineChart(data) {
     .datum(data[1].data)
     .attr("d", area);
 
+
+  const labelPoints = focus.append('g')
+    .attr('class', 'label-points');
+
+  const labels = labelPoints.selectAll('.lineHoverText')
+    .data(keys);
+
+  labels.enter().append("text")
+    .attr("class", "lineHoverText")
+    .style("fill", d => colorScale(d))
+    .attr("text-anchor", "start")
+    .attr("font-size",12)
+    .attr("dy", (_, i) => 1 + i * 2 + "em")
+    .merge(labels);
+
+  const circles = labelPoints.selectAll(".hoverCircle")
+    .data(keys);
+
+  circles.enter().append("circle")
+    .attr("class", d => `hoverCircle circle-${d}`)
+    // .style("fill", d => colorScale(d))
+    .attr("r", 6)
+    .merge(circles);
+
+
+  overlay
+    .on("mouseover", () => focus.style("display", null))
+    .on("mouseout", function() { focus.style("display", "none"); })
+    .on("mousemove", mousemove);
+
+  function mousemove() {
+    const x0 = x.invert(d3.pointer(event)[0])
+    const bisect = d3.bisector(d => d.time).left;
+    const i = bisect(threat, x0, 1);
+    const d0 = threat[i - 1];
+    const d1 = threat[i];
+    const point = x0 - d0.date > d1.date - x0 ? d1 : d0;
+    console.log(point);
+
+    focus.select(".lineHover")
+      .attr("transform", `translate(${x(point.time)}, ${height})`);
+
+    focus.select(".lineHoverDate")
+      .attr("transform",
+        "translate(" + x(point.time) + "," + (height + margin.bottom) + ")")
+      .text(formatTime(point.time));
+
+    focus.selectAll(".hoverCircle")
+      .attr("cy", d => y(point[d]))
+      .attr("cx", x(point.time));
+
+    focus.selectAll(".lineHoverText")
+      .attr("transform",
+        "translate(" + (x(point.time)) + "," + height / 2.5 + ")")
+      .text(d => d);
+
+    if(x(point.time) > 0.75 * width) {
+      focus.selectAll("text.lineHoverText")
+        .attr("text-anchor", "end")
+        .attr("dx", -10)
+      } else {
+        focus.selectAll("text.lineHoverText")
+          .attr("text-anchor", "start")
+          .attr("dx", 10)
+    }
+
+    focus.style('opacity', 1);
+  }
+
+
   // const total = lineGroup.selectAll(".totals")
   //     .data(lineData)
 
@@ -233,5 +307,6 @@ function makeLineChart(data) {
   //   .attr("d", d => line(d.numbers))
 
 }
+
 
 makeLineChart(lineData);
