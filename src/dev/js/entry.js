@@ -200,15 +200,15 @@ function makeLineChart(data) {
     .attr("text-anchor", "middle")
     .attr("font-size", 12);
 
-  const overlay = group.append("rect")
-    .attr("class", "overlay")
-    .attr("x", margin.left)
-    .attr("width", width - margin.right - margin.left)
-    .attr("height", height);
-
   const line = d3.line()
     .x(d => x(d.time))
-    .y(d => y(d.value))
+    .y(d => y(d.value));
+
+  const area = d3.area()
+    .curve(d3.curveLinear)
+    .x(d => x(d.time))
+    .y0(y(0))
+    .y1(d => y(d.value));
 
   const lineGroup = group.append("g")
     .attr('class', 'line-group');
@@ -228,6 +228,11 @@ function makeLineChart(data) {
   join.append('g')
     .attr('class', 'points-group')
 
+  group.append("path")
+    .attr('class', 'line-current-total-fill')
+    .datum(data[1].data)
+    .attr("d", area);
+
   const points = join.selectAll('.points-group')
     .selectAll('.line-point')
     .data(d => d.data)
@@ -236,18 +241,6 @@ function makeLineChart(data) {
     .attr('cx', d => x(d.time))
     .attr('cy', d => y(d.value))
     .attr('r', 2);
-
-  const area = d3.area()
-    .curve(d3.curveLinear)
-    .x(d => x(d.time))
-    .y0(y(0))
-    .y1(d => y(d.value));
-
-  group.append("path")
-    .attr('class', 'line-current-total-fill')
-    .datum(data[1].data)
-    .attr("d", area);
-
 
   const labelPoints = focus.append('g')
     .attr('class', 'label-points');
@@ -271,6 +264,13 @@ function makeLineChart(data) {
     // .style("fill", d => colorScale(d))
     .attr("r", 6)
     .merge(circles);
+
+
+  const overlay = group.append("rect")
+    .attr("class", "overlay")
+    .attr("x", margin.left)
+    .attr("width", width - margin.right - margin.left)
+    .attr("height", height);
 
 
   overlay
@@ -319,7 +319,6 @@ function makeLineChart(data) {
   }
 }
 
-
 function makePieChart(dataset) {
   const pieKeys = ['a', 'b', 'c', 'd'];
   const pieData = pick(dataset, pieKeys);
@@ -336,7 +335,6 @@ function makePieChart(dataset) {
     .innerRadius(0)
     .outerRadius(100)
 
-    console.log((Object.entries(pieData)))
   const part = pieStage.selectAll('.part')
     .data(pie(Object.entries(pieData)));
 
@@ -345,6 +343,5 @@ function makePieChart(dataset) {
     .attr('d', arc)
     .attr('fill', (d, i) => color(i))
 }
-
 
 makeLineChart(lineData);
