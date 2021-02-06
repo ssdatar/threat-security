@@ -162,8 +162,12 @@ function makeLineChart(data) {
   y.domain([0, d3.max(lineData, d => d3.max(d.data, c => c.value))])
     .nice();
 
-  const xAxis = d3.axisBottom(x).tickFormat(formatTime);
-  const yAxis = d3.axisLeft(y);
+  const xAxis = d3.axisBottom(x)
+    .tickFormat(formatTime)
+    .tickSize(- height + margin.top + margin.bottom);
+
+  const yAxis = d3.axisLeft(y)
+    .tickSize(- width + margin.left + margin.right);
 
   group.append("line")
     .attr("class", "y-highlight")
@@ -323,7 +327,6 @@ function makePieChart(dataset) {
   const pieKeys = ['a', 'b', 'c', 'd'];
   const pieData = pick(dataset, pieKeys);
 
-  console.log(pieData);
   const color = d3.scaleOrdinal()
     .domain(pieKeys)
     .range(['#F1892D', '#0EAC51', '#0077C0', '#7E349D', '#DA3C78', '#E74C3C'])
