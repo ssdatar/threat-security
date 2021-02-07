@@ -69,35 +69,49 @@
     fill $globe-link
     stroke #fff
 
+
+  .grid
+    path
+      display none
+      stroke-width 0
+
+    .tick
+      line
+        stroke $gray-light
+      text
+        display none
+
   .x.axis
+    font-family 'Lato'
     .domain
-      stroke none
+      stroke $gray-light
     .tick line
       stroke $gray-light
 
   .y.axis
+    font-family 'Lato'
     .domain
       stroke $gray-light
     .tick line
       stroke $gray-light
 
 #big-numbers
-  height 300px
   display flex
   flex-direction column
   align-items center
-  justify-content space-evenly
+  font-family 'Lato'
 
   .number__data
     color $offwhite
     width 100%
+    margin-bottom .5em
     // text-align center
     text-transform uppercase
     font-size 1.2em
     border-radius 25px
     display flex
     flex-direction column
-    justify-content center
+    justify-content space-between
     align-items center
 
     &--1
@@ -109,9 +123,10 @@
       color $offblack
 
 .pie__wrapper
-  border-radius 25px
+  border-radius 50px
   border 5px solid #1B86A8
   padding 5px
+  font-family 'Lato'
 
   .pie__hed
     text-transform uppercase

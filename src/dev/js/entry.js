@@ -164,10 +164,29 @@ function makeLineChart(data) {
 
   const xAxis = d3.axisBottom(x)
     .tickFormat(formatTime)
-    .tickSize(- height + margin.top + margin.bottom);
+    .tickSizeInner(8)
+    .tickPadding(8);
 
   const yAxis = d3.axisLeft(y)
-    .tickSize(- width + margin.left + margin.right);
+    // .tickSizeInner(- width + margin.left + margin.right)
+
+
+  const grid = group.append('g')
+    .attr('class', 'grid')
+
+  grid.append('g')
+    .attr('class', 'grid grid-x')
+    .call(
+      d3.axisBottom(x)
+        .tickSize(height - margin.top - margin.bottom)
+    );
+
+  grid.append('g')
+    .attr('class', 'grid grid-y')
+    .call(
+      d3.axisLeft(y)
+        .tickSize(- width + margin.left + margin.right)
+    );
 
   group.append("line")
     .attr("class", "y-highlight")
