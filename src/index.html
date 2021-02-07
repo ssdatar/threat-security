@@ -64,22 +64,35 @@
 
           <div class="col-md-4">
             <div id="big-numbers">
-              <div class="number__data"></div>
-              <div class="number__data"></div>
-              <div class="number__data"></div>
+              <div class="number__data number__data--1">
+                <h3 class="number__hed">Critical</h3>
+                <h4 class="number__figure"></h4>
+              </div>
+              <div class="number__data number__data--2">
+                <h3 class="number__hed">Medium</h3>
+                <h4 class="number__figure"></h4>
+              </div>
+              <div class="number__data number__data--3">
+                <h3 class="number__hed">Low</h3>
+                <h4 class="number__figure"></h4>
+              </div>
             </div>
 
-            <div class="graphic__legend">
-              <span class="legend-box legend-box-1"></span>
-              <span class="legend-text">Suspect external connections</span>
-              <span class="legend-box legend-box-2"></span>
-              <span class="legend-text">Internal data transfer</span>
-              <span class="legend-box legend-box-3"></span>
-              <span class="legend-text">External data transfer</span>
-              <span class="legend-box legend-box-4"></span>
-              <span class="legend-text">>1 GB outbound</span>
+            <div class="pie__wrapper">
+              <h4 class="pie__hed">Breach type</h4>
+
+              <div class="graphic__legend">
+                <span class="legend-box legend-box-1"></span>
+                <span class="legend-text">Suspect external connections</span>
+                <span class="legend-box legend-box-2"></span>
+                <span class="legend-text">Internal data transfer</span>
+                <span class="legend-box legend-box-3"></span>
+                <span class="legend-text">External data transfer</span>
+                <span class="legend-box legend-box-4"></span>
+                <span class="legend-text">>1 GB outbound</span>
+              </div>
+              <div id="pie-chart"></div>
             </div>
-            <div id="pie-chart"></div>
           </div>
         </div>
       </div>

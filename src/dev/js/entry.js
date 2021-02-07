@@ -320,6 +320,7 @@ function makeLineChart(data) {
     focus.style('opacity', 1);
 
     makePieChart(point);
+    makeBigNumbers(point);
   }
 }
 
@@ -334,8 +335,6 @@ function makePieChart(dataset) {
   const pie = d3.pie()
     .value((d) => d[1]);
 
-  [0, 1, 2, 3].forEach(d => console.log(color(d)));
-
   const arc = d3.arc()
     .innerRadius(0)
     .outerRadius(100)
@@ -343,15 +342,25 @@ function makePieChart(dataset) {
   const part = pieStage.selectAll('.part')
     .data(pie(Object.entries(pieData)));
 
-    console.log(pie(Object.entries(pieData)))
-
   part.join('path')
     .attr('class', 'part')
     .attr('d', arc)
     .attr('fill', (d, i) => {
       return color(i);
-    })
+    });
+}
+
+function makeBigNumbers(nums) {
+  const { severe, medium, low } = nums;
+  const numArray = [severe, medium, low];
+
+  d3.selectAll('.number__figure')
+    .each(function(d, i) {
+      d3.select(this)
+        .text(numArray[i]);
+    });
 }
 
 makeLineChart(lineData);
 makePieChart(threat[0]);
+makeBigNumbers(threat[0]);

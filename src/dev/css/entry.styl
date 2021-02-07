@@ -83,6 +83,40 @@
 
 #big-numbers
   height 300px
+  display flex
+  flex-direction column
+  align-items center
+  justify-content space-evenly
+
+  .number__data
+    color $offwhite
+    width 100%
+    // text-align center
+    text-transform uppercase
+    font-size 1.2em
+    border-radius 25px
+    display flex
+    flex-direction column
+    justify-content center
+    align-items center
+
+    &--1
+      background #BE0712
+    &--2
+      background #FD8832
+    &--3
+      background #FDBF2D
+      color $offblack
+
+.pie__wrapper
+  border-radius 25px
+  border 5px solid #1B86A8
+  padding 5px
+
+  .pie__hed
+    text-transform uppercase
+    text-align center
+    color #1B86A8
 
 #pie-chart
   height 200px
