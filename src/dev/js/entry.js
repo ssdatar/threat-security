@@ -146,6 +146,7 @@ const pieStage = d3.select('#pie-chart')
 
 const table = document.querySelector('#event-table');
 const tableKeys = Object.keys(eventData[0]).filter(d => d !== 'time');
+const breach = d3.select('.table__hed--num');
 
 function makeLineChart(data) {
   const { width, height } = d3.select('#line-chart').node().getBoundingClientRect();
@@ -411,6 +412,8 @@ function makeTable(tbl) {
   const toRemove = [...Array(rows.dt.activeRows.length).keys()];
   rows.remove(toRemove);
   dataTable.insert(newData);
+
+  breach.text(tblData[0].Time);
 }
 
 makeLineChart(lineData);
