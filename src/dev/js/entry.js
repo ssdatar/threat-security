@@ -328,11 +328,13 @@ function makePieChart(dataset) {
   const pieData = pick(dataset, pieKeys);
 
   const color = d3.scaleOrdinal()
-    .domain(pieKeys)
-    .range(['#F1892D', '#0EAC51', '#0077C0', '#7E349D', '#DA3C78', '#E74C3C'])
+    .domain([0, 1, 2, 3])
+    .range(d3.schemeCategory10);
 
   const pie = d3.pie()
-    .value((d) => d[1])
+    .value((d) => d[1]);
+
+  [0, 1, 2, 3].forEach(d => console.log(color(d)));
 
   const arc = d3.arc()
     .innerRadius(0)
@@ -341,10 +343,15 @@ function makePieChart(dataset) {
   const part = pieStage.selectAll('.part')
     .data(pie(Object.entries(pieData)));
 
+    console.log(pie(Object.entries(pieData)))
+
   part.join('path')
     .attr('class', 'part')
     .attr('d', arc)
-    .attr('fill', (d, i) => color(i))
+    .attr('fill', (d, i) => {
+      return color(i);
+    })
 }
 
 makeLineChart(lineData);
+makePieChart(threat[0]);
