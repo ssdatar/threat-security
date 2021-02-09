@@ -311,7 +311,7 @@ function makeLineChart(data) {
     .on("mousemove", mousemove);
 
   function mousemove() {
-    const x0 = x.invert(d3.pointer(event)[0])
+    const x0 = x.invert(d3.pointer(event)[0]);
     const bisect = d3.bisector(d => d.time).left;
     const i = bisect(threat, x0, 1);
     const d0 = threat[i - 1];
@@ -322,27 +322,26 @@ function makeLineChart(data) {
       .attr("transform", `translate(${x(point.time)}, ${height})`);
 
     focus.select(".lineHoverDate")
-      .attr("transform",
-        "translate(" + x(point.time) + "," + (height + margin.bottom) + ")")
+      .attr('transform', `translate(${x(point.time)}, ${height + margin.bottom})`)
       .text(formatTime(point.time));
 
     focus.selectAll(".hoverCircle")
       .attr("cy", d => y(point[d]))
       .attr("cx", x(point.time));
 
-    focus.selectAll(".lineHoverText")
+    focus.select(".lineHoverText")
       .attr("transform",
         "translate(" + (x(point.time)) + "," + height / 2.5 + ")")
-      .text(d => d);
+      .text(formatTime(point.time));
 
     if(x(point.time) > 0.75 * width) {
       focus.selectAll("text.lineHoverText")
         .attr("text-anchor", "end")
         .attr("dx", -10)
-      } else {
-        focus.selectAll("text.lineHoverText")
-          .attr("text-anchor", "start")
-          .attr("dx", 10)
+    } else {
+      focus.selectAll("text.lineHoverText")
+        .attr("text-anchor", "start")
+        .attr("dx", 10);
     }
 
     focus.style('opacity', 1);
@@ -405,6 +404,7 @@ function makeTable(tbl) {
   const options = {
     searchable: false,
     fixedHeight: true,
+    perPage: false,
     data: newData,
   };
 
@@ -429,6 +429,7 @@ const initTableData = {
 const options = {
   searchable: false,
   fixedHeight: true,
+  perPageSelect: false,
   data: initTableData,
 };
 
