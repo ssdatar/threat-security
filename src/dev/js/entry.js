@@ -390,7 +390,7 @@ function makeBigNumbers(nums) {
   d3.selectAll('.number__figure')
     .each(function(d, i) {
       d3.select(this)
-        .text(numArray[i]);
+        .text(`${numArray[i]} events`);
     });
 
   topNumbers.each(function(d, i) {
@@ -443,6 +443,9 @@ const options = {
   fixedHeight: true,
   perPageSelect: false,
   data: initTableData,
+  layout: {
+    bottom: '',
+  },
 };
 
 const dataTable = new DataTable(table, options);
