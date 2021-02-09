@@ -25,23 +25,50 @@
 *::before,
 *::after {
   box-sizing: border-box;
+  font-family 'Lato' !important
 }
+
+#top-numbers
+  display flex
+  justify-content flex-end
+
+  .top__num
+    color $gray-dark
+    &:first-child
+      margin-right 1em
+
+    &--figure
+      font-size 1.3em
+
+    &--legend
+      .num__legend
+        height .6em
+        width @height
+        border-radius 50%
+        display inline-block
+        margin-right 5px
+        color $gray
+
+        &--estimated
+          background #2369E3
+
+        &--historical
+          background #F3A536
 
 #line-chart
   height 600px
-
   .overlay
     fill none
     pointer-events all
 
   .line-historical_total
     fill none
-    stroke orange
+    stroke #F3A536
     stroke-width 2
 
   .line-wrapper-historical_total
     .line-point
-      fill orange !important
+      fill #F3A536 !important
 
   .line-current_total
     stroke $globe-link
@@ -62,7 +89,7 @@
     stroke-width 4
 
   .circle-historical_total
-    fill orange
+    fill #F3A536
     stroke #fff
 
   .circle-current_total
@@ -85,8 +112,11 @@
     font-family 'Lato'
     .domain
       stroke $gray-light
-    .tick line
-      stroke $gray-light
+    .tick
+      line
+        stroke $gray-light
+      text
+        font-size 1.1em
 
   .y.axis
     font-family 'Lato'
@@ -159,6 +189,10 @@
 
   &-4
     background #d62728
+
+.table__hed
+  color #97040B
+  text-transform uppercase
 
 #event-table
   th

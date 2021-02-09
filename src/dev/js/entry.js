@@ -135,7 +135,7 @@ const bisectDate = d3.bisector(d => d.time).left;
 const formatTime = d3.timeFormat('%H:%M %p');
 const colorScale = d3.scaleOrdinal()
   .domain(keys)
-  .range('orange', '#005DC7');
+  .range('#F3A536', '#2369E3');
 
 const pieBounds = d3.select('#pie-chart').node().getBoundingClientRect();
 const pieStage = d3.select('#pie-chart')
