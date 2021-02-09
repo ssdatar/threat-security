@@ -19,7 +19,8 @@
     </style>
 
     <!-- UPDATE VERSION # IF YOU NEED TO REPUBLISH -->
-    <link href='https://fonts.googleapis.com/css?family=Lato&subset=latin,latin-ext' rel='stylesheet' type='text/css' />
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+     <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;700&display=swap" rel="stylesheet">
     <!-- CSS only -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
     <link href="https://unpkg.com/vanilla-datatables@latest/dist/vanilla-dataTables.min.css" rel="stylesheet" type="text/css">
@@ -49,13 +50,13 @@
               <div class="top__num">
                 <div class="top__num--figure">55,000</div>
                 <div class="top__num--legend">
-                  <span class="num__legend num__legend--estimated"></span>Estimated
+                  <span class="num__legend num__legend--estimated"></span>Estimated events
                 </div>
               </div>
               <div class="top__num">
                 <div class="top__num--figure">10,784</div>
                 <div class="top__num--legend">
-                  <span class="num__legend num__legend--historical"></span>Historical
+                  <span class="num__legend num__legend--historical"></span>Historical events
                 </div>
               </div>
             </div>
@@ -82,15 +83,20 @@
               <h4 class="pie__hed">Breach type</h4>
 
               <div class="graphic__legend">
-                <span class="legend-box legend-box-1"></span>
-                <span class="legend-text">Suspect external connections</span>
-                <span class="legend-box legend-box-2"></span>
-                <span class="legend-text">Internal data transfer</span>
-                <span class="legend-box legend-box-3"></span>
-                <span class="legend-text">External data transfer</span>
-                <span class="legend-box legend-box-4"></span>
-                <span class="legend-text">>1 GB outbound</span>
+                <div>
+                  <span class="legend-box legend-box-1"></span>
+                  <span class="legend-text">Suspect external connections</span>
+                  <span class="legend-box legend-box-2"></span>
+                  <span class="legend-text">Internal data transfer</span>
+                </div>
+                <div>
+                  <span class="legend-box legend-box-3"></span>
+                  <span class="legend-text">External data transfer</span>
+                  <span class="legend-box legend-box-4"></span>
+                  <span class="legend-text">>1 GB outbound</span>
+                </div>
               </div>
+
               <div id="pie-chart"></div>
             </div>
           </div>
@@ -101,7 +107,7 @@
         <div class="row">
           <div class="col-12">
             <div class="table__wrapper">
-              <h4 class="pie__hed table__hed">Critical breaches at <span class="table__hed--num">0:00</span></h4>
+              <h4 class="pie__hed table__hed">Critical breaches just before <span class="table__hed--num">0:00</span></h4>
               <table id="event-table"></table>
             </div>
           </div>
