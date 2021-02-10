@@ -146,7 +146,9 @@ const pieStage = d3.select('#pie-chart')
     .attr("viewBox", [0, 0, pieBounds.width, pieBounds.height])
     .append('g')
     .attr('transform', 'translate(' + pieBounds.width / 2 + ',' + pieBounds.height / 2 + ')');
+const pieRadius = 90;
 
+// Table
 const table = document.querySelector('#event-table');
 const tableKeys = Object.keys(eventData[0]).filter(d => d !== 'time' && d !== 'Time');
 const breach = d3.select('.table__hed--num');
@@ -371,7 +373,7 @@ function makePieChart(dataset) {
 
   const arc = d3.arc()
     .innerRadius(0)
-    .outerRadius(100);
+    .outerRadius(pieRadius);
 
   const part = pieStage.selectAll('.part')
     .data(pie(Object.entries(pieData)));
@@ -390,7 +392,9 @@ function makeBigNumbers(nums) {
   d3.selectAll('.number__figure')
     .each(function(d, i) {
       d3.select(this)
-        .text(`${numArray[i]} events`);
+        .html(`
+          <span class="bold">${numArray[i]}</span>
+          <span class="small">events</span>`);
     });
 
   topNumbers.each(function(d, i) {
