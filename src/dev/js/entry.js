@@ -312,9 +312,14 @@ function makeLineChart(data) {
     .attr("height", height);
 
   overlay
-    .on("mouseover", () => focus.style("display", null))
-    .on("mouseout", function() { focus.style("display", "none"); })
-    .on("mousemove", mousemove);
+    .on("mouseenter", () => focus.style("display", null))
+    .on("mouseleave", function() { focus.style("display", "none"); })
+    .on("mousemove", () => {
+      if(window.innerWidth > 600) {
+        mousemove();
+      }
+    })
+    .on('touchend', mousemove);
 
   function mousemove() {
     const x0 = x.invert(d3.pointer(event)[0]);
