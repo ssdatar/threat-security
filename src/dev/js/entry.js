@@ -431,8 +431,13 @@ function makeTable(tbl) {
 
   const options = {
     searchable: false,
-    fixedHeight: true,
+    // fixedHeight: true,
+    fixedColumns: false,
+    perPageSelect: false,
     perPage: false,
+    layout: {
+      bottom: '',
+    },
     data: newData,
   };
 
@@ -456,7 +461,8 @@ const initTableData = {
 
 const options = {
   searchable: false,
-  fixedHeight: true,
+  // fixedHeight: true,
+  fixedColumns: false,
   perPageSelect: false,
   data: initTableData,
   layout: {
