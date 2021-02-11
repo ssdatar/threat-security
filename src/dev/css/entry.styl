@@ -59,7 +59,7 @@
   height 400px
   margin 1em 0
   +mq(bp-2)
-    height 600px
+    height 90vh
   .overlay
     fill none
     pointer-events all
@@ -133,8 +133,10 @@
   flex-direction column
   justify-content space-evenly
   font-family 'Raleway', sans-serif
-  height 250px
+  height auto
   margin 1em 0 0 0
+  +mq(bp-2)
+    height 42vh
 
   .number__data
     color $offwhite
@@ -142,12 +144,14 @@
     margin-bottom .5em
     // text-align center
     text-transform uppercase
-    font-size 1.2em
+    font-size 1em
     border-radius 25px
     display flex
     flex-direction column
     justify-content space-between
     align-items center
+    +mq(bp-2)
+      font-size 1.2em
 
     &--1
       background #BE0712
@@ -176,18 +180,24 @@
     color #1B86A8
 
 #pie-chart
-  height 250px
+  height 30vh
+  +mq(bp-2)
+    height 30vh
 
 .legend-text
   font-size 0.7em
   vertical-align text-top
+  margin-right 3px
 
 .legend-box
-  height 1em
+  height .55em
   width @height
   border-radius 50%
   display inline-block
-  margin-right .25em
+  // margin-right .2em
+  +mq(bp-2)
+    height .85em
+    width @height
 
   &-1
     background #1f77b4

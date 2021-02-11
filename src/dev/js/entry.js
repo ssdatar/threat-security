@@ -1,5 +1,5 @@
 /*eslint-disable*/
-import { pick } from 'lodash';
+import { pick, debounce } from 'lodash';
 import * as ed from './eventData';
 import DataTable from 'vanilla-datatables';
 
@@ -139,19 +139,13 @@ const colorScale = d3.scaleOrdinal()
 
 const topNumbers = d3.selectAll('.top__num--figure');
 
-// Pie chart
-const pieBounds = d3.select('#pie-chart').node().getBoundingClientRect();
-const pieStage = d3.select('#pie-chart')
-    .append('svg')
-    .attr("viewBox", [0, 0, pieBounds.width, pieBounds.height])
-    .append('g')
-    .attr('transform', 'translate(' + pieBounds.width / 2 + ',' + pieBounds.height / 2 + ')');
-const pieRadius = 90;
 
 // Table
 const table = document.querySelector('#event-table');
 const tableKeys = Object.keys(eventData[0]).filter(d => d !== 'time' && d !== 'Time');
 const breach = d3.select('.table__hed--num');
+
+let highlighted = threat[0];
 
 function makeLineChart(data) {
   const { width, height } = d3.select('#line-chart').node().getBoundingClientRect();
@@ -162,13 +156,14 @@ function makeLineChart(data) {
 
   const svg = d3.select('#line-chart')
     .append("svg")
+    .attr('preserveAspectRatio', 'xMinYMin')
     .attr("viewBox", [0, 0, width, height]);
 
   const group = svg.append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
   const x = d3.scaleTime()
-    .range([0, width - margin.left - margin.right])
+    .range([0, innerWidth])
     .domain(xDomain)
 
   const y = d3.scaleLinear()
@@ -312,7 +307,6 @@ function makeLineChart(data) {
     .attr("width", width - margin.right - margin.left)
     .attr("height", height);
 
-
   overlay
     .on("mouseover", () => focus.style("display", null))
     .on("mouseout", function() { focus.style("display", "none"); })
@@ -325,6 +319,8 @@ function makeLineChart(data) {
     const d0 = threat[i - 1];
     const d1 = threat[i];
     const point = x0 - d0.time > d1.time - x0 ? d1 : d0;
+
+    highlighted = point;
 
     focus.select(".lineHover")
       .attr("transform", `translate(${x(point.time)}, ${height})`);
@@ -361,6 +357,18 @@ function makeLineChart(data) {
 }
 
 function makePieChart(dataset) {
+  d3.select('#pie-chart-svg').remove();
+  // Pie chart
+  const pieBounds = d3.select('#pie-chart').node().getBoundingClientRect();
+  const pieStage = d3.select('#pie-chart')
+      .append('svg')
+      .attr('id', 'pie-chart-svg')
+      .attr('preserveAspectRatio', 'xMinYMin')
+      .attr("viewBox", [0, 0, pieBounds.width, pieBounds.height])
+      .append('g')
+      .attr('transform', 'translate(' + pieBounds.width / 2 + ',' + pieBounds.height / 2 + ')');
+  const pieRadius = pieBounds.height * 0.4;
+
   const pieKeys = ['a', 'b', 'c', 'd'];
   const pieData = pick(dataset, pieKeys);
 
@@ -383,6 +391,7 @@ function makePieChart(dataset) {
     .attr('d', arc)
     .attr('fill', (d, i) => color(i));
 }
+
 
 function makeBigNumbers(nums) {
   const { severe, medium, low, current_total, historical_total } = nums;
@@ -453,3 +462,11 @@ const options = {
 };
 
 const dataTable = new DataTable(table, options);
+
+window.addEventListener('resize', debounce(() => {
+  d3.select('#line-chart > svg').remove();
+  makeLineChart(lineData);
+  makePieChart(highlighted);
+}), 250);
+
+
