@@ -412,7 +412,6 @@ function makeBigNumbers(nums) {
   });
 }
 
-
 function makeTable(tbl) {
   const { Time } = tbl;
   const tblData = eventData.filter(d => d.Time === Time);

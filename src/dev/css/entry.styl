@@ -59,7 +59,7 @@
   height 400px
   margin 1em 0
   +mq(bp-2)
-    height 90vh
+    height 600px
   .overlay
     fill none
     pointer-events all
@@ -136,7 +136,7 @@
   height auto
   margin 1em 0 0 0
   +mq(bp-2)
-    height 42vh
+    height 250px
 
   .number__data
     color $offwhite
@@ -180,36 +180,51 @@
     color #1B86A8
 
 #pie-chart
-  height 30vh
+  height 200px
   +mq(bp-2)
-    height 30vh
+    width 100%
+    height 200px
+  +mq(bp-3)
+    height 250px
+  // +mq(bp-5)
+  //   height 250px
 
-.legend-text
-  font-size 0.7em
-  vertical-align text-top
-  margin-right 3px
 
-.legend-box
-  height .55em
-  width @height
-  border-radius 50%
-  display inline-block
-  // margin-right .2em
-  +mq(bp-2)
-    height .85em
-    width @height
+.graphic__legend
+  display flex
+  flex-wrap wrap
+  justify-content space-evenly
+  &--row
+    .legend-item
+      .legend-text
+        font-size 0.7em
+        vertical-align text-bottom
+        margin-right 3px
+        display inline-block
+        +mq(bp-2)
+          vertical-align middle
 
-  &-1
-    background #1f77b4
+      .legend-box
+        height .55em
+        width @height
+        border-radius 50%
+        display inline-block
+        // margin-right .2em
+        +mq(bp-2)
+          height .7em
+          width @height
 
-  &-2
-    background #ff7f0e
+        &-1
+          background #1f77b4
 
-  &-3
-    background #2ca02c
+        &-2
+          background #ff7f0e
 
-  &-4
-    background #d62728
+        &-3
+          background #2ca02c
+
+        &-4
+          background #d62728
 
 .table__hed
   color #97040B
