@@ -177,6 +177,10 @@ function makeLineChart(data) {
     .tickSizeInner(8)
     .tickPadding(8);
 
+  if (window.innerWidth < 600) {
+    xAxis.tickFormat(d3.timeFormat('%H:%M'))
+  }
+
   const yAxis = d3.axisLeft(y)
     // .tickSizeInner(- width + margin.left + margin.right)
 
