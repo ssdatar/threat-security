@@ -312,14 +312,14 @@ function makeLineChart(data) {
     .attr("height", height);
 
   overlay
-    .on("mouseenter", () => focus.style("display", null))
-    .on("mouseleave", function() { focus.style("display", "none"); })
-    .on("mousemove", () => {
-      if(window.innerWidth > 600) {
-        mousemove();
-      }
-    })
-    .on('touchend', mousemove);
+    // .on("mouseenter", () => focus.style("display", null))
+    // .on("mouseleave", function() { focus.style("display", "none"); })
+    // .on("mousemove", () => {
+    //   if(window.innerWidth > 600) {
+    //     mousemove();
+    //   }
+    // })
+    .on('mousemove', mousemove);
 
   function mousemove() {
     const x0 = x.invert(d3.pointer(event)[0]);
