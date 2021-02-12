@@ -2,6 +2,7 @@
 import { pick, debounce } from 'lodash';
 import * as ed from './eventData';
 import DataTable from 'vanilla-datatables';
+import isMobile from './utils/isMobile';
 
 window.onResize = (width) => {
   console.log(width);
@@ -10,6 +11,9 @@ window.onResize = (width) => {
 window.enterView = (msg) => {
   console.log('enter-view', msg);
 };
+
+let isTouchDevice = false;
+let windowWidth = window.innerWidth;
 
 let { eventData } = ed;
 eventData = Array.from(eventData);
@@ -139,13 +143,17 @@ const colorScale = d3.scaleOrdinal()
 
 const topNumbers = d3.selectAll('.top__num--figure');
 
-
 // Table
 const table = document.querySelector('#event-table');
 const tableKeys = Object.keys(eventData[0]).filter(d => d !== 'time' && d !== 'Time');
 const breach = d3.select('.table__hed--num');
 
 let highlighted = threat[0];
+
+d3.select(document.body)
+  .on('touchstart', () => {
+    isTouchDevice = true;
+  });
 
 function makeLineChart(data) {
   const { width, height } = d3.select('#line-chart').node().getBoundingClientRect();
@@ -229,7 +237,7 @@ function makeLineChart(data) {
     .style("shape-rendering", "crispEdges")
     .style("opacity", 0.5)
     .attr("y1", -height)
-    .attr("y2", margin.bottom + margin.top);
+    .attr("y2", -margin.bottom);
 
   focus.append("text")
     .attr("class", "lineHoverDate")
@@ -307,19 +315,43 @@ function makeLineChart(data) {
 
   const overlay = group.append("rect")
     .attr("class", "overlay")
-    .attr("x", margin.left)
+    .attr("x", 0)
     .attr("width", width - margin.right - margin.left)
-    .attr("height", height);
+    .attr("height", height - margin.top - margin.bottom);
+
 
   overlay
-    // .on("mouseenter", () => focus.style("display", null))
-    // .on("mouseleave", function() { focus.style("display", "none"); })
-    // .on("mousemove", () => {
-    //   if(window.innerWidth > 600) {
-    //     mousemove();
+    // .on('mouseout', () => {
+    //   if (isTouchDevice) {
+    //     return;
+    //   } else {
+    //     focus.style('opacity', 0);
     //   }
     // })
     .on('mousemove', mousemove);
+
+  // overlay
+  //   .on('mouseout', (e) => {
+  //     focus.style('opacity', 0);
+  //   })
+  //   .on('mousemove', (e) => {
+  //     if (isMobile.ios() !== 'iPhone') {
+  //       e.preventDefault();
+  //       e.stopPropagation();
+  //       mousemove();
+  //     }
+  //   });
+
+  // overlay.on('touchstart', function(event) {
+  //   if (isMobile.ios() === 'iPhone') {
+  //     mousemove();
+  //     event.preventDefault();
+  //     e.stopPropagation();
+  //   }
+  // });
+
+  // overlay.on('touchstart touchend touchmove', e => e.preventDefault);
+  // overlay.on('touchmove', e => e.preventDefault, { passive: false });
 
   function mousemove() {
     const x0 = x.invert(d3.pointer(event)[0]);
@@ -478,9 +510,10 @@ const options = {
 const dataTable = new DataTable(table, options);
 
 window.addEventListener('resize', debounce(() => {
-  d3.select('#line-chart > svg').remove();
-  makeLineChart(lineData);
-  makePieChart(highlighted);
+  if (window.innerWidth !== windowWidth) {
+    windowWidth = window.innerWidth;
+    d3.select('#line-chart > svg').remove();
+    makeLineChart(lineData);
+    makePieChart(highlighted);
+  }
 }), 250);
-
-
