@@ -408,14 +408,15 @@ function makePieChart(dataset) {
       .attr("viewBox", [0, 0, pieBounds.width, pieBounds.height])
       .append('g')
       .attr('transform', 'translate(' + pieBounds.width / 2 + ',' + pieBounds.height / 2 + ')');
-  const pieRadius = pieBounds.height * 0.4;
 
+  const pieRadius = pieBounds.height * 0.4;
   const pieKeys = ['a', 'b', 'c', 'd'];
   const pieData = pick(dataset, pieKeys);
+  const pieColors = ['#1188AA', '#004455', '#66BBFF', '#77CCBB']
 
   const color = d3.scaleOrdinal()
     .domain([0, 1, 2, 3])
-    .range(d3.schemeCategory10);
+    .range(pieColors);
 
   const pie = d3.pie()
     .value((d) => d[1]);
@@ -428,7 +429,7 @@ function makePieChart(dataset) {
     .data(pie(Object.entries(pieData)));
 
   part.join('path')
-    .attr('class', 'part')
+    .attr('class', d => `path ${d.data[0]}`)
     .attr('d', arc)
     .attr('fill', (d, i) => color(i));
 }
