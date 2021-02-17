@@ -227,23 +227,6 @@ function makeLineChart(data) {
     .attr("class", "y axis")
     .call(yAxis);
 
-  const focus = group.append("g")
-    .attr("class", "focus");
-
-  focus.append("line")
-    .attr("class", "lineHover")
-    .style("stroke", "#999")
-    .attr("stroke-width", 2.5)
-    .style("shape-rendering", "crispEdges")
-    .style("opacity", 0.5)
-    .attr("y1", -height)
-    .attr("y2", -margin.bottom);
-
-  focus.append("text")
-    .attr("class", "lineHoverDate")
-    .attr("text-anchor", "middle")
-    .attr("font-size", 12);
-
   const line = d3.line()
     .x(d => x(d.time))
     .y(d => y(d.value));
@@ -253,6 +236,11 @@ function makeLineChart(data) {
     .x(d => x(d.time))
     .y0(y(0))
     .y1(d => y(d.value));
+
+  group.append("path")
+    .attr('class', 'line-current-total-fill')
+    .datum(data[1].data)
+    .attr("d", area);
 
   const lineGroup = group.append("g")
     .attr('class', 'line-group');
@@ -272,11 +260,6 @@ function makeLineChart(data) {
   join.append('g')
     .attr('class', 'points-group')
 
-  group.append("path")
-    .attr('class', 'line-current-total-fill')
-    .datum(data[1].data)
-    .attr("d", area);
-
   const points = join.selectAll('.points-group')
     .selectAll('.line-point')
     .data(d => d.data)
@@ -287,7 +270,10 @@ function makeLineChart(data) {
     .attr('r', 2);
 
   d3.selectAll('.line-wrapper-historical_total > .points-group > circle')
-    .attr('r', 0)
+    .attr('r', 0);
+
+  const focus = group.append("g")
+    .attr("class", "focus");
 
   const labelPoints = focus.append('g')
     .attr('class', 'label-points');
@@ -312,6 +298,20 @@ function makeLineChart(data) {
     .style("fill", d => colorScale(d))
     .attr("r", 6)
     .merge(circles);
+
+  focus.append("line")
+    .attr("class", "lineHover")
+    .style("stroke", "#999")
+    .attr("stroke-width", 2.5)
+    .style("shape-rendering", "crispEdges")
+    .style("opacity", 0.5)
+    .attr("y1", -height)
+    .attr("y2", -margin.bottom);
+
+  focus.append("text")
+    .attr("class", "lineHoverDate")
+    .attr("text-anchor", "middle")
+    .attr("font-size", 12);
 
   const overlay = group.append("rect")
     .attr("class", "overlay")
