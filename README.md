@@ -3,7 +3,9 @@
 # Setup
 Run `npm i`
 
-Run local server: `npm start`
+Run local server: `npm start`.
+
+Heads up — `localhost:8888` will show you a dummy page with the graphic embedded as an iframe. If you wish to only see the graphic, please navigate to `http://localhost:8888/src/index.html`.
 
 # Build
 
